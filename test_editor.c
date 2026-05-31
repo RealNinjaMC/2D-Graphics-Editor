@@ -11,6 +11,7 @@ void drawLine(int x1, int y1, int x2, int y2);
 void drawRectangle(int x, int y, int width, int height);
 void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3);
 void drawCircle(int cx, int cy, int radius);
+int isInsideCanvas(int x, int y);
 
 static void test_clear_canvas_uses_underscores(void)
 {
@@ -56,6 +57,16 @@ static void test_circle_draws_cardinal_points(void)
     assert(canvas[6][20] == '*');
 }
 
+static void test_canvas_bounds_are_checked(void)
+{
+    assert(isInsideCanvas(0, 0) == 1);
+    assert(isInsideCanvas(COLS - 1, ROWS - 1) == 1);
+    assert(isInsideCanvas(-1, 0) == 0);
+    assert(isInsideCanvas(0, -1) == 0);
+    assert(isInsideCanvas(COLS, 0) == 0);
+    assert(isInsideCanvas(0, ROWS) == 0);
+}
+
 int main(void)
 {
     test_clear_canvas_uses_underscores();
@@ -63,6 +74,7 @@ int main(void)
     test_rectangle_draws_corners();
     test_triangle_draws_vertices();
     test_circle_draws_cardinal_points();
+    test_canvas_bounds_are_checked();
     printf("All editor tests passed.\n");
     return 0;
 }

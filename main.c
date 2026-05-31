@@ -50,10 +50,15 @@ static int readInt(const char *prompt)
     }
 }
 
+int isInsideCanvas(int x, int y)
+{
+    return x >= 0 && x < COLS && y >= 0 && y < ROWS;
+}
+
 static void putPixel(int x, int y)
 {
-    /* Out of canvas points are ignored, so weird input cannot crash drawing. */
-    if (x >= 0 && x < COLS && y >= 0 && y < ROWS) {
+    /* If a shape crosses the border, only the visible part is drawn. */
+    if (isInsideCanvas(x, y)) {
         canvas[y][x] = '*';
     }
 }
@@ -198,7 +203,7 @@ static void drawObject(const GraphicObject *object)
 
 void redrawCanvas(void)
 {
-    /* Redraw from object list, so delete and modify remove old pixels cleanly. */
+    /* The canvas is rebuilt from saved objects after every edit. */
     clearCanvas();
     for (int i = 0; i < objectCount; i++) {
         if (objects[i].active) {
@@ -219,7 +224,7 @@ static int findFreeSlot(void)
 
 static void readObjectData(GraphicObject *object, int type)
 {
-    /* Same storage is used for all shapes; unused values stay zero. */
+    /* One object structure is reused for every shape type. */
     object->active = 1;
     object->type = type;
     object->x1 = 0;
@@ -256,6 +261,27 @@ static void readObjectData(GraphicObject *object, int type)
     }
 }
 
+static void printObjectDetails(int number, const GraphicObject *object)
+{
+    printf("%d. %s - ", number, shapeName(object->type));
+
+    if (object->type == SHAPE_LINE) {
+        printf("from (%d, %d) to (%d, %d)", object->x1, object->y1,
+               object->x2, object->y2);
+    } else if (object->type == SHAPE_RECTANGLE) {
+        printf("top-left (%d, %d), width %d, height %d", object->x1,
+               object->y1, object->width, object->height);
+    } else if (object->type == SHAPE_CIRCLE) {
+        printf("center (%d, %d), radius %d", object->x1, object->y1,
+               object->radius);
+    } else if (object->type == SHAPE_TRIANGLE) {
+        printf("points (%d, %d), (%d, %d), (%d, %d)", object->x1,
+               object->y1, object->x2, object->y2, object->x3, object->y3);
+    }
+
+    printf("\n");
+}
+
 void listObjects(void)
 {
     int found = 0;
@@ -263,7 +289,7 @@ void listObjects(void)
     printf("\nObjects:\n");
     for (int i = 0; i < objectCount; i++) {
         if (objects[i].active) {
-            printf("%d. %s\n", i + 1, shapeName(objects[i].type));
+            printObjectDetails(i + 1, &objects[i]);
             found = 1;
         }
     }
@@ -347,6 +373,7 @@ static void clearAllObjects(void)
 static void showMenu(void)
 {
     printf("\n2D Graphics Editor\n");
+    printf("Canvas: %d columns x %d rows. Top-left is (0, 0).\n", COLS, ROWS);
     printf("1. Add object\n");
     printf("2. Delete object\n");
     printf("3. Modify object\n");
