@@ -119,3 +119,7 @@ This project demonstrates:
 - Basic shape drawing algorithms.
 - Rebuilding output from stored data.
 - Simple automated testing for C functions.
+
+## Project Note
+
+This repository was made as a Mini Project for Semester 2, CSE-F.
