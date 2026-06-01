@@ -20,6 +20,8 @@ This approach makes delete and modify operations cleaner because old pixels are 
 - Clear the complete picture.
 - Display the canvas at any time.
 - Ignore out-of-bounds pixels safely instead of crashing.
+- Reject malformed numeric input such as `12abc` instead of accepting only
+  the leading number.
 
 ## How It Works
 

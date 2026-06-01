@@ -12,6 +12,29 @@ void drawRectangle(int x, int y, int width, int height);
 void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3);
 void drawCircle(int cx, int cy, int radius);
 int isInsideCanvas(int x, int y);
+int parseInt(const char *text, int *value);
+
+static void test_parse_int_accepts_clean_numbers(void)
+{
+    int value = 0;
+
+    assert(parseInt("42\n", &value) == 1);
+    assert(value == 42);
+    assert(parseInt("   -7  \n", &value) == 1);
+    assert(value == -7);
+}
+
+static void test_parse_int_rejects_invalid_input(void)
+{
+    int value = 99;
+
+    assert(parseInt("12abc\n", &value) == 0);
+    assert(value == 99);
+    assert(parseInt("abc\n", &value) == 0);
+    assert(parseInt("\n", &value) == 0);
+    assert(parseInt("999999999999999999999999\n", &value) == 0);
+    assert(parseInt("5 6\n", &value) == 0);
+}
 
 static void test_clear_canvas_uses_underscores(void)
 {
@@ -69,6 +92,8 @@ static void test_canvas_bounds_are_checked(void)
 
 int main(void)
 {
+    test_parse_int_accepts_clean_numbers();
+    test_parse_int_rejects_invalid_input();
     test_clear_canvas_uses_underscores();
     test_line_draws_start_and_end();
     test_rectangle_draws_corners();

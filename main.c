@@ -1,9 +1,14 @@
+#include <ctype.h>
+#include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define ROWS 25
 #define COLS 60
 #define MAX_OBJECTS 50
+#define INPUT_BUFFER_SIZE 128
 
 #define SHAPE_LINE 1
 #define SHAPE_RECTANGLE 2
@@ -28,7 +33,7 @@ char canvas[ROWS][COLS];
 GraphicObject objects[MAX_OBJECTS];
 int objectCount = 0;
 
-static void clearInput(void)
+static void discardRestOfLine(void)
 {
     int ch;
 
@@ -36,17 +41,64 @@ static void clearInput(void)
     }
 }
 
+int parseInt(const char *text, int *value)
+{
+    char *end;
+    long parsed;
+
+    if (text == NULL || value == NULL) {
+        return 0;
+    }
+
+    while (isspace((unsigned char)*text)) {
+        text++;
+    }
+
+    if (*text == '\0') {
+        return 0;
+    }
+
+    errno = 0;
+    parsed = strtol(text, &end, 10);
+    if (text == end || errno == ERANGE || parsed < INT_MIN || parsed > INT_MAX) {
+        return 0;
+    }
+
+    while (isspace((unsigned char)*end)) {
+        end++;
+    }
+
+    if (*end != '\0') {
+        return 0;
+    }
+
+    *value = (int)parsed;
+    return 1;
+}
+
 static int readInt(const char *prompt)
 {
+    char input[INPUT_BUFFER_SIZE];
     int value;
 
     while (1) {
         printf("%s", prompt);
-        if (scanf("%d", &value) == 1) {
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            printf("\nInput ended.\n");
+            exit(EXIT_FAILURE);
+        }
+
+        if (strchr(input, '\n') == NULL) {
+            discardRestOfLine();
+            printf("Input is too long. Please enter a whole number.\n");
+            continue;
+        }
+
+        if (parseInt(input, &value)) {
             return value;
         }
-        printf("Please enter a number.\n");
-        clearInput();
+
+        printf("Please enter a whole number.\n");
     }
 }
 
