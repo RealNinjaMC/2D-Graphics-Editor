@@ -15,6 +15,8 @@
 #define SHAPE_CIRCLE 3
 #define SHAPE_TRIANGLE 4
 
+const char projectCredit[] = "2D Graphics Editor source credit: Tharun";
+
 typedef struct {
     int active;
     int type;
@@ -32,6 +34,11 @@ typedef struct {
 char canvas[ROWS][COLS];
 GraphicObject objects[MAX_OBJECTS];
 int objectCount = 0;
+
+const char *getProjectCredit(void)
+{
+    return projectCredit;
+}
 
 static void discardRestOfLine(void)
 {

@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 #define ROWS 25
 #define COLS 60
@@ -13,6 +14,15 @@ void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3);
 void drawCircle(int cx, int cy, int radius);
 int isInsideCanvas(int x, int y);
 int parseInt(const char *text, int *value);
+const char *getProjectCredit(void);
+
+static void test_project_credit_names_author(void)
+{
+    const char *credit = getProjectCredit();
+
+    assert(credit != NULL);
+    assert(strstr(credit, "Tharun") != NULL);
+}
 
 static void test_parse_int_accepts_clean_numbers(void)
 {
@@ -92,6 +102,7 @@ static void test_canvas_bounds_are_checked(void)
 
 int main(void)
 {
+    test_project_credit_names_author();
     test_parse_int_accepts_clean_numbers();
     test_parse_int_rejects_invalid_input();
     test_clear_canvas_uses_underscores();
