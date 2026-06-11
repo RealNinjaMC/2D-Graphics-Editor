@@ -1,0 +1,57 @@
+Create a complete C program for a console-based 2D Graphics Editor.
+
+Requirements:
+
+- Use a 25x60 ASCII canvas.
+- Represent empty pixels using '_' and drawn pixels using '*'.
+- Support the following shapes:
+  1. Line
+  2. Rectangle
+  3. Circle
+  4. Triangle
+
+Features:
+
+- Display the canvas at all times.
+- Add new objects.
+- Delete existing objects.
+- Modify existing objects.
+- List all objects with their coordinates and properties.
+- Clear the entire picture.
+- Exit the program.
+
+Implementation Requirements:
+
+- Store shapes using a structure named GraphicObject.
+- Maintain an array of up to 50 objects.
+- Every object must have an active flag and shape type.
+- Rebuild the canvas from stored objects after every modification.
+- Use Bresenham's Line Algorithm for drawing lines.
+- Use the Midpoint Circle Algorithm for drawing circles.
+- Draw rectangles using four lines.
+- Draw triangles using three connected lines.
+
+Input Handling:
+
+- Validate all integer input.
+- Reject invalid or non-numeric input.
+- Prevent buffer overflow using fgets().
+- Handle coordinates outside the canvas by drawing only the visible portion.
+
+Program Menu:
+
+1. Add object
+2. Delete object
+3. Modify object
+4. List objects
+5. Clear picture
+6. Display picture
+0. Exit
+
+Additional Requirements:
+
+- Use modular functions.
+- Follow good coding practices.
+- Include comments explaining important functions.
+- Display object details in a human-readable format.
+- Keep the code compatible with standard C (C99).
